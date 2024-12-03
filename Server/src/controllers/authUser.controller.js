@@ -1,0 +1,245 @@
+import Blog from "../models/blog.model.js";
+import Image from "../models/image.model.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import fs from "fs";
+import path from "path";
+
+// Get the current directory path in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+export const welcomeUser = async (req, res) => {
+  try {
+    return res.status(200).json({
+      message: "Welcome!",
+      user: req.user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const uploadBlog = async (req, res) => {
+  try {
+    const blogInfo = req.body;
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No files uploaded." });
+    }
+    // Get the image's file path
+    // const imagePath = path.join(__dirname, "..", "uploads", req.file.filename);
+
+    const imagePaths = req.files.map((file) => file.path);
+    const newBlog = new Blog({
+      title: blogInfo.title,
+      content: blogInfo.content,
+      author: req.user._id,
+      tags: blogInfo.tags,
+      category: blogInfo.category,
+      images: imagePaths,
+      status: blogInfo.status,
+    });
+    const uploadBlogInDatabase = await newBlog.save();
+    if (!uploadBlogInDatabase) {
+      return res.status(201).json({
+        success: false,
+        message: "Blog insertion failed!!",
+      });
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Blog Uploaded Successfully!!",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getUploadedBlog = async (req, res) => {
+  try {
+    const getUserId = req.user._id;
+    if (!getUserId) {
+      return res.status(400).json({
+        success: false,
+        message: "You are not an authorized user!",
+      });
+    }
+    // Fetch all posts uploaded by the logged-in user
+    const userPosts = await Blog.find({ author: getUserId });
+    if (!userPosts || userPosts.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No posts found for this user",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      posts: userPosts, // Return only the posts of the logged-in user
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const removeBlog = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const deleteBlog = await Blog.findByIdAndDelete(id);
+    if (!deleteBlog) {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot Delete a Blog!. Invalid Id!!",
+      });
+    }
+    return res
+      .status(200)
+      .json({ success: true, message: "Successfully deleted a Blog" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getBlogById = async (req, res) => {
+  try {
+    const blogId = req.params.id;
+
+    const indvBlog = await Blog.findById(blogId);
+    if (!indvBlog) {
+      return res
+        .status(404)
+        .json({ message: "Cannot find the blog with that id" });
+    }
+    return res.status(200).json({
+      status: true,
+      Blogs: indvBlog,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const likeBlog = async (req, res) => {
+  try {
+    const blogId = req.params.id;
+    const userId = req.user._id; // Assume user ID is added to `req.user` by authentication middleware
+
+    // Find the blog
+    const blog = await Blog.findById(blogId);
+
+    // If blog is not found
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found.",
+      });
+    }
+
+    // Check if the user has already liked the blog
+    if (blog.likedBy.includes(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already liked this blog.",
+      });
+    }
+
+    // Add user ID to the likedBy array and increment the likes count
+    blog.likedBy.push(userId);
+    blog.likes += 1;
+    await blog.save();
+
+    // Return the updated blog
+    return res.status(200).json({
+      success: true,
+      message: "Blog liked successfully!",
+      blog,
+    });
+  } catch (error) {
+    console.error("Error while liking the blog:", error);
+
+    // Return error response
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while liking the blog.",
+      error: error.message,
+    });
+  }
+};
+export const addComment = async (req, res) => {
+  try {
+    const blogId = req.params.id;
+    const userId = req.user._id; // Assume user ID is added to `req.user` by authentication middleware
+    const { comment } = req.body; // Expect a single comment in the request body
+
+    // Find the blog
+    const blog = await Blog.findById(blogId);
+
+    // If blog is not found
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found.",
+      });
+    }
+
+    // Add the new comment to the comments array
+    blog.comments.push({
+      user: userId,
+      comment: comment,
+    });
+
+    // Save the updated blog
+    await blog.save();
+
+    // Return the updated blog
+    return res.status(200).json({
+      success: true,
+      message: "Comment added successfully!",
+      blog,
+    });
+  } catch (error) {
+    console.error("Error while adding a comment:", error);
+
+    // Return error response
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while adding a comment.",
+      error: error.message,
+    });
+  }
+};
+export const incrementViewCount = async (req, res) => {
+  try {
+    const blogId = req.params.id;
+
+    // Find and update the blog, incrementing the views count
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      { $inc: { views: 1 } }, // $inc operator increments the views field
+      { new: true } // Return the updated blog document
+    );
+
+    // If blog is not found
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found.",
+      });
+    }
+
+    // Return success response
+    return res.status(200).json({
+      success: true,
+      message: "View count incremented successfully.",
+      blog,
+    });
+  } catch (error) {
+    console.error("Error incrementing view count:", error);
+
+    // Return error response
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while incrementing the view count.",
+      error: error.message,
+    });
+  }
+};
