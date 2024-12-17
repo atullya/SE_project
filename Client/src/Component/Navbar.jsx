@@ -23,9 +23,10 @@ const Navbar = () => {
           <a href="/about" className="text-white hover:text-gray-200">
             About
           </a>
-          <a href="/contact" className="text-white hover:text-gray-200">
+          
+          <Link to={"/contact"} className="text-white hover:text-gray-200">
             Contact
-          </a>
+         </Link>
           {/* Add Login and Signup */}
           <a href="/login" className="text-white hover:text-gray-200">
             Login

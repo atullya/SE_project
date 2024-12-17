@@ -10,6 +10,7 @@ import AuthHome from "./Pages/Auth/AuthHome.jsx";
 import AllUserPost from "./Pages/Auth/Page/AllUserPost.jsx";
 import NewPost from "./Pages/Auth/Dashboard/NewPost.jsx";
 import UploadNewPost from "./Pages/Auth/Page/UploadNewPost.jsx";
+import Contact from "./Pages/Guest/Contact.jsx";
 
 const allRoutes = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const allRoutes = createBrowserRouter([
   {
     path: "home",
     element: <Home />,
+  },
+  {
+    path: "contact",
+    element: <Contact />,
   },
   {
     path: "signup",
