@@ -25,6 +25,10 @@ function AllUserPost() {
     }
   };
 
+  const deleteBlog = async () => {
+    alert("Deletee");
+  };
+
   useEffect(() => {
     fetchAllPost(); // Call the function to fetch posts when the component mounts
   }, []); // Empty dependency array ensures this runs only once
@@ -37,7 +41,7 @@ function AllUserPost() {
           posts.map((post, index) => (
             <div
               key={index}
-              className="border-2 border-gray-700 rounded-[5px] mt-16 p-8 flex justify-between group"
+              className="border-2 border-gray-700 rounded-[5px] mt-16 p-6 flex justify-between group"
             >
               <div className=" flex gap-2 ">
                 {post.images && post.images[0] ? (
@@ -58,7 +62,7 @@ function AllUserPost() {
                     {post.title}
                   </h3>
 
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center gap-[20px]">
                     <h3 className="font-mono">
                       {new Date(post.createdAt).toISOString().slice(0, 10)}
                     </h3>
@@ -73,23 +77,26 @@ function AllUserPost() {
                   <h2 className="text-2xl">Atullya</h2>
 
                   {/* Hidden "Show" by default */}
-                  <h2 className="hidden group-hover:block">Show</h2>
+                  <h2 className="hidden group-hover:block ">Show</h2>
                   {/* <h2 className="hidden group-hover:block">Delete</h2> */}
-                  <FaTrash className="hidden group-hover:block" />
+                  <FaTrash
+                    className="hidden group-hover:block"
+                    onClick={() => deleteBlog()}
+                  />
 
                   {/* Hidden FaUserCircle by default */}
-                  <FaUserCircle className="text-3xl group-hover:hidden" />
+                  <FaUserCircle className="text-2xl group-hover:hidden" />
                 </div>
                 <div className="flex gap-6 items-center text-[#90A4AE]">
                   <FaShare className="text-2xl" />
                   <div className="flex gap-3">
-                    <p>0</p>
-                    <MdModeComment className="text-2xl" />
+                    <p className="text-black">0</p>
+                    <MdModeComment className="text-2xl text-black" />
                   </div>
                   <div className="flex gap-3">
-                    <p>{post.views}</p>
+                    <p className="text-black">{post.views}</p>
 
-                    <GrView className="text-2xl" />
+                    <GrView className="text-2xl text-black" />
                   </div>
                 </div>
               </div>
