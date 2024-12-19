@@ -38,14 +38,14 @@ const AuthHome = () => {
   return (
     <>
       {userdata ? (
-        <p className="text-center text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-pink-700 to-red-700">
+        <p className="text-center text-3xl mt-2 font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-pink-700 to-red-700">
           Welcome, {userdata.username}
         </p>
       ) : (
         <p>Loading user data...</p>
       )}
       <UserContextProvider>
-        <div className="flex fixed">
+        <div className="flex fixed top-5">
           <div className="">
             <SideBar userdata={userdata} />
             {/* <h1 className="text-2xl font-bold mb-4">AuthHome</h1> */}

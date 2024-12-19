@@ -11,6 +11,8 @@ import AllUserPost from "./Pages/Auth/Page/AllUserPost.jsx";
 import NewPost from "./Pages/Auth/Dashboard/NewPost.jsx";
 import UploadNewPost from "./Pages/Auth/Page/UploadNewPost.jsx";
 import Contact from "./Pages/Guest/Contact.jsx";
+import StatsPage from "./Pages/Auth/Page/StatsPage.jsx";
+import UserProfile from "./Pages/Auth/Page/UserProfile.jsx";
 
 const allRoutes = createBrowserRouter([
   {
@@ -44,6 +46,14 @@ const allRoutes = createBrowserRouter([
   {
     path: "newpost",
     element: <UploadNewPost />,
+  },
+  {
+    path: "stats",
+    element: <StatsPage />,
+  },
+  {
+    path: "userprofile",
+    element: <UserProfile />,
   },
 ]);
 

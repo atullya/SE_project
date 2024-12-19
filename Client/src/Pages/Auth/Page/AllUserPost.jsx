@@ -30,7 +30,7 @@ function AllUserPost() {
   }, []); // Empty dependency array ensures this runs only once
 
   return (
-    <div className="flex">
+    <div className="flex cursor-pointer">
       <Aside />
       <div className="w-full  mr-10">
         {posts.length > 0 ? (
@@ -39,7 +39,7 @@ function AllUserPost() {
               key={index}
               className="border-2 border-gray-700 rounded-[5px] mt-16 p-8 flex justify-between group"
             >
-              <div className=" flex ">
+              <div className=" flex gap-2 ">
                 {post.images && post.images[0] ? (
                   <img
                     src={`http://localhost:4000/uploads/${post.images[0]
@@ -51,9 +51,15 @@ function AllUserPost() {
                   "No Image Found"
                 )}
                 <div>
-                  <h3>{post.title}</h3>
+                  <h3
+                    style={{ fontFamily: "'Roboto Flex', serif" }}
+                    className="text-2xl"
+                  >
+                    {post.title}
+                  </h3>
+
                   <div className="flex items-center justify-center">
-                    <h3>
+                    <h3 className="font-mono">
                       {new Date(post.createdAt).toISOString().slice(0, 10)}
                     </h3>
                     <h3 className="border-2 rounded-[10px] p-2 border-gray-500">
@@ -81,7 +87,7 @@ function AllUserPost() {
                     <MdModeComment className="text-2xl" />
                   </div>
                   <div className="flex gap-3">
-                    <p>0</p>
+                    <p>{post.views}</p>
 
                     <GrView className="text-2xl" />
                   </div>

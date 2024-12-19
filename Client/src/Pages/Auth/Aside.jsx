@@ -9,7 +9,7 @@ import Logout from "./Dashboard/Logout";
 
 function Aside() {
   // Track the active tab
-  const [activeTab, setActiveTab] = useState("Dashboard");
+  const [activeTab, setActiveTab] = useState("");
 
   // Function to handle active tab change
   const handleTabChange = (tab) => {
@@ -64,10 +64,12 @@ function Aside() {
             />
 
             {/* Stats */}
-            <Stats
-              isActive={activeTab === "Stats"}
-              onClick={() => handleTabChange("Stats")}
-            />
+            <Link to={"/stats"}>
+              <Stats
+                isActive={activeTab === "Stats"}
+                onClick={() => handleTabChange("Stats")}
+              />
+            </Link>
 
             {/* Comments */}
             <Comments

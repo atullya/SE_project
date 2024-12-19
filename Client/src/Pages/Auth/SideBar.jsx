@@ -44,7 +44,7 @@ function SideBar({ userdata }) {
           </ul>
         </div>
       </aside>
-      <div className="">
+      <div className="mt-2 p-9 ">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
         asperiores nulla maiores fuga nam atque magnam totam labore nostrum
         facilis sequi vero delectus saepe mollitia minus dolorum cum molestiae
