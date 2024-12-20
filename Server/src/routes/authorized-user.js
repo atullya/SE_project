@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addComment,
+  editProfile,
   getBlogById,
   getUploadedBlog,
   incrementViewCount,
@@ -21,7 +22,8 @@ authorizedRoutes.post(
 );
 authorizedRoutes.get("/blogs/:id", authMiddleware, getBlogById);
 authorizedRoutes.get("/welcome", authMiddleware, welcomeUser);
-authorizedRoutes.get("/uploadedblog", authMiddleware, getUploadedBlog);
+authorizedRoutes.get("/uploadedblog", authMiddleware,  getUploadedBlog);
+authorizedRoutes.patch('/edit',authMiddleware,uploadMiddleware.single("image"),editProfile)
 
 authorizedRoutes.delete("/remove/:id", authMiddleware, removeBlog);
 

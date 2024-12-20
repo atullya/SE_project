@@ -13,6 +13,7 @@ import UploadNewPost from "./Pages/Auth/Page/UploadNewPost.jsx";
 import Contact from "./Pages/Guest/Contact.jsx";
 import StatsPage from "./Pages/Auth/Page/StatsPage.jsx";
 import UserProfile from "./Pages/Auth/Page/UserProfile.jsx";
+import FullBlogPage from "./Pages/Guest/FullBlogPage.jsx";
 
 const allRoutes = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const allRoutes = createBrowserRouter([
   {
     path: "userprofile",
     element: <UserProfile />,
+  },
+  {
+    path: "fullblog/:blogid",
+    element: <FullBlogPage />,
   },
 ]);
 

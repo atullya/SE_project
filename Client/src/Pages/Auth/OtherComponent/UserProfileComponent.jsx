@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import EditProfileModal from "./EditProfileModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditPasswordModal from "./EditPasswordModal";
+
 const UserProfileComponent = () => {
   const [userdata, setUserdata] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); // Profile modal state
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false); // Password modal state
   const navigate = useNavigate();
 
   const fetchProfile = async () => {
@@ -17,7 +20,6 @@ const UserProfileComponent = () => {
       });
 
       if (res.status === 401) {
-        // Redirect to login if unauthorized
         navigate("/login");
       } else if (res.ok) {
         const data = await res.json();
@@ -33,18 +35,17 @@ const UserProfileComponent = () => {
 
   const handleSaveProfile = (updatedData) => {
     console.log("Updated data: ", updatedData);
-    // Save updated data, maybe via an API request to update the profile
     setUserdata((prev) => ({
       ...prev,
       username: updatedData.username,
       phoneNumber: updatedData.phoneNumber,
     }));
-    setIsModalOpen(false); // Close modal after saving
+    setIsProfileModalOpen(false); // Close modal after saving
   };
 
   useEffect(() => {
     fetchProfile();
-  }, []); // Prevent infinite requests with an empty dependency array
+  }, []);
 
   if (!userdata) {
     return <div>Loading...</div>;
@@ -94,14 +95,19 @@ const UserProfileComponent = () => {
             <span>{userdata.views || 0}</span>
           </li>
         </ul>
+
+        {/* Buttons */}
         <div className="border-t p-4 flex">
           <button
-            onClick={() => setIsModalOpen(true)} // Open the modal on click
+            onClick={() => setIsProfileModalOpen(true)} // Open Edit Profile Modal
             className="w-1/2 mx-auto block rounded-full bg-gray-900 text-white font-semibold px-6 py-2 hover:bg-gray-700 transition duration-300"
           >
             Edit Profile
           </button>
-          <button className="w-1/2 mx-auto block rounded-full bg-gray-900 text-white font-semibold px-6 py-2 hover:bg-gray-700 transition duration-300">
+          <button
+            onClick={() => setIsPasswordModalOpen(true)} // Open Change Password Modal
+            className="w-1/2 mx-auto block rounded-full bg-gray-900 text-white font-semibold px-6 py-2 hover:bg-gray-700 transition duration-300"
+          >
             Change Password
           </button>
         </div>
@@ -110,11 +116,20 @@ const UserProfileComponent = () => {
       {/* Modal to Edit Profile */}
       <EditProfileModal
         fetchProfile={fetchProfile}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)} // Close the modal
-        onSave={handleSaveProfile} // Pass save handler
-        userdata={userdata} // Pass userdata to modal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)} // Close modal
+        onSave={handleSaveProfile}
+        userdata={userdata}
       />
+
+      {/* Modal to Change Password */}
+      <EditPasswordModal
+        fetchProfile={fetchProfile}
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)} // Close modal
+        userdata={userdata}
+      />
+
       <ToastContainer />
     </div>
   );

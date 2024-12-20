@@ -19,6 +19,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
+    "react-modal": "^3.16.3",
     "react-quilljs": "^2.0.4",
     "react-router-dom": "^7.0.1",
     "react-toastify": "^10.0.6"
