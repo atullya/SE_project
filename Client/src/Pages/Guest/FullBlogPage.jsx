@@ -90,7 +90,7 @@ const FullBlogPage = () => {
                   ? `http://localhost:4000/uploads/${author.profilePic
                       .split("\\")
                       .pop()}`
-                  : "http://localhost:4000/uploads/default.png" // Fallback image
+                  : "https://avatar.iran.liara.run/public/23" // Fallback image
               }
               alt={author?.username || "No Username"}
             />

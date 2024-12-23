@@ -25,8 +25,8 @@ function AllUserPost() {
     }
   };
 
-  const deleteBlog = async () => {
-    alert("Deletee");
+  const deleteBlog = async (delid) => {
+    alert(delid);
   };
 
   useEffect(() => {
@@ -81,7 +81,7 @@ function AllUserPost() {
                   {/* <h2 className="hidden group-hover:block">Delete</h2> */}
                   <FaTrash
                     className="hidden group-hover:block"
-                    onClick={() => deleteBlog()}
+                    onClick={() => deleteBlog(post._id)}
                   />
 
                   {/* Hidden FaUserCircle by default */}
