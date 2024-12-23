@@ -1,49 +1,78 @@
-import React, { useEffect, useState } from "react"; // Import useState to manage data
+import React, { useEffect, useState } from "react"; 
 import Aside from "../Aside";
 import axios from "axios";
-import { FaUserCircle } from "react-icons/fa";
-import { FaShare } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaUserCircle, FaShare, FaTrash } from "react-icons/fa";
 import { MdModeComment } from "react-icons/md";
 import { GrView } from "react-icons/gr";
-import { FaTrash } from "react-icons/fa";
+
 function AllUserPost() {
-  const [posts, setPosts] = useState([]); // State to store the fetched posts
+  const [posts, setPosts] = useState([]);
+  const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [deleteId, setDeleteId] = useState(null); // ID of the post to be deleted
 
   const fetchAllPost = async () => {
     try {
-      // Await the axios request
       let res = await axios.get("/api/blog/uploadedblog", {
-        withCredentials: true, // This is the correct way to include cookies in axios
+        withCredentials: true,
       });
-      console.log(res.data);
-
       if (res.data) {
-        setPosts(res.data.posts); // Set the fetched posts data into state
+        setPosts(res.data.posts);
       }
     } catch (error) {
-      console.error("Error fetching posts:", error); // Handle any errors
+      console.error("Error fetching posts:", error);
     }
   };
 
-  const deleteBlog = async (delid) => {
-    alert(delid);
+  const deleteBlog = async () => {
+    try {
+      const res = await axios.delete(`/api/blog/remove/${deleteId}`, {
+        withCredentials: true,
+      });
+      if (res.data) {
+        toast.success("Post Deleted Successfully");
+        fetchAllPost();
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An unknown error occurred";
+      toast.error(`Error deleting posts: ${errorMessage}`);
+    } finally {
+      setShowModal(false); // Close modal after action
+      setDeleteId(null); // Clear the delete ID
+    }
   };
 
   useEffect(() => {
-    fetchAllPost(); // Call the function to fetch posts when the component mounts
-  }, []); // Empty dependency array ensures this runs only once
+    fetchAllPost();
+  }, []);
+
+  const confirmDelete = (id) => {
+    setDeleteId(id); // Store the post ID to delete
+    setShowModal(true); // Show confirmation modal
+  };
+
+  const cancelDelete = () => {
+    setShowModal(false); // Close the modal
+    setDeleteId(null); // Clear the ID
+    toast.info("Deletion canceled");
+  };
 
   return (
     <div className="flex cursor-pointer">
+      <ToastContainer />
       <Aside />
-      <div className="w-full  mr-10">
+      <div className="w-full mr-10">
         {posts.length > 0 ? (
           posts.map((post, index) => (
             <div
               key={index}
               className="border-2 border-gray-700 rounded-[5px] mt-16 p-6 flex justify-between group"
             >
-              <div className=" flex gap-2 ">
+              <div className="flex gap-2">
                 {post.images && post.images[0] ? (
                   <img
                     src={`http://localhost:4000/uploads/${post.images[0]
@@ -61,7 +90,6 @@ function AllUserPost() {
                   >
                     {post.title}
                   </h3>
-
                   <div className="flex items-center justify-center gap-[20px]">
                     <h3 className="font-mono">
                       {new Date(post.createdAt).toISOString().slice(0, 10)}
@@ -72,19 +100,13 @@ function AllUserPost() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-6 ">
+              <div className="flex flex-col gap-6">
                 <div className="flex items-center gap-[20px] group">
                   <h2 className="text-2xl">Atullya</h2>
-
-                  {/* Hidden "Show" by default */}
-                  <h2 className="hidden group-hover:block ">Show</h2>
-                  {/* <h2 className="hidden group-hover:block">Delete</h2> */}
                   <FaTrash
-                    className="hidden group-hover:block"
-                    onClick={() => deleteBlog(post._id)}
+                    className="hidden group-hover:block cursor-pointer"
+                    onClick={() => confirmDelete(post._id)}
                   />
-
-                  {/* Hidden FaUserCircle by default */}
                   <FaUserCircle className="text-2xl group-hover:hidden" />
                 </div>
                 <div className="flex gap-6 items-center text-[#90A4AE]">
@@ -95,7 +117,6 @@ function AllUserPost() {
                   </div>
                   <div className="flex gap-3">
                     <p className="text-black">{post.views}</p>
-
                     <GrView className="text-2xl text-black" />
                   </div>
                 </div>
@@ -103,9 +124,33 @@ function AllUserPost() {
             </div>
           ))
         ) : (
-          <p>No posts found.</p> // Show a message if no posts are available
+          <p>No posts found.</p>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 className="text-xl font-semibold mb-4">Confirm Deletion</h2>
+            <p>Are you sure you want to delete this post?</p>
+            <div className="flex justify-end gap-4 mt-4">
+              <button
+                onClick={cancelDelete}
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteBlog}
+                className="bg-red-500 text-white px-4 py-2 rounded"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
