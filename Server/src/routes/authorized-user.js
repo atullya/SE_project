@@ -8,10 +8,12 @@ import {
   likeBlog,
   removeBlog,
   uploadBlog,
+  viewAvailableAllBlog,
   welcomeUser,
 } from "../controllers/authUser.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import uploadMiddleware from "../middleware/upload-middleware.js";
+import Blog from "../models/blog.model.js";
 const authorizedRoutes = express.Router();
 
 authorizedRoutes.post(
@@ -23,6 +25,16 @@ authorizedRoutes.post(
 authorizedRoutes.get("/blogs/:id", authMiddleware, getBlogById);
 authorizedRoutes.get("/welcome", authMiddleware, welcomeUser);
 authorizedRoutes.get("/uploadedblog", authMiddleware,  getUploadedBlog);
+authorizedRoutes.get("/viewavailableblog", authMiddleware,  viewAvailableAllBlog);
+authorizedRoutes.get("/inv/:id", async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate("author");
+    res.json(blog);
+  } catch (error) {
+    res.status(500).send("Server Error");
+  }
+});
+
 authorizedRoutes.patch('/edit',authMiddleware,uploadMiddleware.single("image"),editProfile)
 
 authorizedRoutes.delete("/remove/:id", authMiddleware, removeBlog);

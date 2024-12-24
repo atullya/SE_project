@@ -14,6 +14,8 @@ import Contact from "./Pages/Guest/Contact.jsx";
 import StatsPage from "./Pages/Auth/Page/StatsPage.jsx";
 import UserProfile from "./Pages/Auth/Page/UserProfile.jsx";
 import FullBlogPage from "./Pages/Guest/FullBlogPage.jsx";
+import ReadOtherBlogs from "./Pages/Auth/Page/ReadOtherBlogs.jsx";
+import BlogDetails from "./Pages/Auth/Page/BlogDetails.jsx";
 
 const allRoutes = createBrowserRouter([
   {
@@ -59,6 +61,14 @@ const allRoutes = createBrowserRouter([
   {
     path: "fullblog/:blogid",
     element: <FullBlogPage />,
+  },
+  {
+    path: "viewblog",
+    element: <ReadOtherBlogs />,
+  },
+  {
+    path: "/blogs/:id",
+    element: <BlogDetails />,
   },
 ]);
 
